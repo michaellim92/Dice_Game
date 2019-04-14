@@ -18,7 +18,7 @@ GAME RULES:
 3. add another dice to the game, so that there are two dice now. the player looses his current score when one of them is a 1. ( hint: you will need CSS to position the second dice so take a look at the css code)
 */
 
-var scores, roundScore, activePlayer, gamePlaying;
+var scores, roundScore, activePlayer, gamePlaying, defaultScore;
 
 init();
 
@@ -61,8 +61,8 @@ document.querySelector('.btn-hold').addEventListener('click', function() {
     document.querySelector('#score-' + activePlayer).textContent =   scores[activePlayer];
 
     //check if player won the game
-    var defaultScore = 20;
     if (scores[activePlayer] >= defaultScore) {
+      clickScore();
       document.querySelector('#name-' + activePlayer).textContent = 'Winner!';
       document.querySelector('.dice').style.display = 'none';
       document.querySelector('.player-' + activePlayer + '-panel').classList.add('Winner');
@@ -73,6 +73,19 @@ document.querySelector('.btn-hold').addEventListener('click', function() {
     }
   }
 });
+
+function clickScore() {
+  //storing the input value into a variable
+  document.querySelector('#send-score').addEventListener('click', function() {
+  var winningScore = document.getElementById('win-score').value;
+});
+  if (winningScore > 0 && winningScore !== 100) {
+    defaultScore = winningScore;
+    gamePlaying = true;
+  } else {
+    defaultScore = 20;
+  }
+}
 
 function nextPlayer() {
   activePlayer === 0 ? activePlayer = 1 : activePlayer = 0;
