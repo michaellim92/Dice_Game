@@ -33,17 +33,26 @@ document.querySelector('.btn-roll').addEventListener('click', function() {
     if (gamePlaying) {
 
       // 1. random number generator
-      var dice = Math.floor(Math.random() * 6) + 1;
+      var dice1 = Math.floor(Math.random() * 6) + 1;
+      var dice2 = Math.floor(Math.random() * 6) + 1;
 
       //2. display scores
-      var diceDOM =document.querySelector('.dice')
-      diceDOM.style.display = 'block';
-      diceDOM.src = 'dice-' + dice + '.png';
+      var diceDOM1 =document.querySelector('#dice-1')
+      diceDOM1.style.display = 'block';
+      diceDOM1.src = 'dice-' + dice1 + '.png';
+
+      var diceDOM2 =document.querySelector('#dice-2')
+      diceDOM2.style.display = 'block';
+      diceDOM2.src = 'dice-' + dice2 + '.png';
 
       //3. update the roudn score IF dice roll is more than 1
-      if (dice !== 1) { //!== is "different", if dice is different from one then add score up
+      if (dice1 === 6 && dice2 === 6) {
+        scores[activePlayer] = 0;
+        document.querySelector('#score-' + activePlayer).textContent = '0';
+        nextPlayer();
+      } else if (dice1 !== 1 && dice2 !== 1) { //!== is "different", if dice is different from one then add score up
         //add the score up for corresponding player
-        roundScore += dice;
+        roundScore += dice1 + dice2;
         document.querySelector('#current-' + activePlayer).textContent = roundScore;
       } else {
         //change player
@@ -59,34 +68,28 @@ document.querySelector('.btn-hold').addEventListener('click', function() {
 
     //update UI
     document.querySelector('#score-' + activePlayer).textContent =   scores[activePlayer];
-
     //check if player won the game
+
     if (scores[activePlayer] >= defaultScore) {
-      clickScore();
       document.querySelector('#name-' + activePlayer).textContent = 'Winner!';
-      document.querySelector('.dice').style.display = 'none';
+      document.querySelector('#dice-1').style.display = 'none';
+      document.querySelector('#dice-2').style.display = 'none';
       document.querySelector('.player-' + activePlayer + '-panel').classList.add('Winner');
       document.querySelector('.player-' + activePlayer + '-panel').classList.remove('active');
       gamePlaying = false;
     } else {
+      defaultScore = 100;
       nextPlayer();
     }
   }
 });
-
+/*
 function clickScore() {
-  //storing the input value into a variable
-  document.querySelector('#send-score').addEventListener('click', function() {
-  var winningScore = document.getElementById('win-score').value;
+  document.querySelector('.send-score').addEventListener('click', function() {
+  defaultScore = document.getElementById('win-score').value;
 });
-  if (winningScore > 0 && winningScore !== 100) {
-    defaultScore = winningScore;
-    gamePlaying = true;
-  } else {
-    defaultScore = 20;
-  }
 }
-
+*/
 function nextPlayer() {
   activePlayer === 0 ? activePlayer = 1 : activePlayer = 0;
   // ternary operator, acts like an if else statement, ? = "then", functions like {}.\, : = else
@@ -103,7 +106,8 @@ function nextPlayer() {
   document.querySelector('.player-1-panel').classList.add('active');
   */
 
-  document.querySelector('.dice').style.display = "none";
+  document.querySelector('#dice-1').style.display = "none";
+  document.querySelector('#dice-2').style.display = "none";
 }
 
 document.querySelector('.btn-new').addEventListener('click', init);
@@ -114,7 +118,8 @@ function init() {
   roundScore = 0;
   gamePlaying = true;
 
-  document.querySelector('.dice').style.display = 'none';
+  document.querySelector('#dice-1').style.display = 'none';
+  document.querySelector('#dice-2').style.display = 'none';
 
   document.getElementById('score-0').textContent = '0';
   document.getElementById('score-1').textContent = '0';
@@ -127,5 +132,17 @@ function init() {
   document.querySelector('.player-1-panel').classList.remove('Winner');
   document.querySelector('.player-0-panel').classList.remove('active');
   document.querySelector('.player-1-panel').classList.remove('active');
-  document.querySelector('.player-0-panel').classList.add('active');
+  document.querySelector('#win-score').value = '';
+}
+
+document.querySelector('#send-score').addEventListener('click', winScore);
+
+function winScore() {
+  var input = document.getElementById('win-score').value
+
+  if (input >= 0 && input !== 100) {
+    defaultScore = input;
+  } else {
+    defaultScore = 100;
+  }
 }
